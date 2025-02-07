@@ -43,7 +43,7 @@ my-django-todo-app
 
 3. Configurez la base de données dans `backend/backend/settings.py`.
 
-4. Exécutez les migrations :
+4. Exécutez les migrations :è
 
    ```
    python manage.py migrate
