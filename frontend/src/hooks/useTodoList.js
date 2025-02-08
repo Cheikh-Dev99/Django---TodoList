@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 
 // Mettre à jour l'URL de base
-const API_BASE_URL = "https://CheikhDev99.pythonanywhere.com/api/";
+const API_BASE_URL = "https://cheikhdev99.pythonanywhere.com/api/";
 
 export default function useTodoList() {
   const [tasks, setTasks] = useState([]);
@@ -14,8 +14,7 @@ export default function useTodoList() {
   // Récupérer les tâches
   const fetchTasks = async () => {
     const response = await fetch(`${API_BASE_URL}tasks/`);
-    const data = await response.json();
-    setTasks(data);
+    return response.json();
   };
 
   // Ajouter une tâche
