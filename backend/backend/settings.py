@@ -31,7 +31,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
 # ALLOWED_HOSTS = []
-ALLOWED_HOSTS = ['your-username.pythonanywhere.com']
+ALLOWED_HOSTS = ['CheikhDev99.pythonanywhere.com']
 
 
 # Application definition
