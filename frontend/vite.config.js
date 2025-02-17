@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "https://CheikhDev99.pythonanywhere.com",
+        target: "https://django-todo-backend-50w9.onrender.com",
         changeOrigin: true,
       },
     },

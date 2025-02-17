@@ -1,8 +1,8 @@
 // useTodoList.js
 import { useEffect, useState } from "react";
 
-// Mettre à jour l'URL de base
-const API_BASE_URL = "https://cheikhdev99.pythonanywhere.com/api/";
+// Remplacer l'ancienne URL par la nouvelle URL Render
+const API_BASE_URL = "https://django-todo-backend-50w9.onrender.com/api/";
 
 export default function useTodoList() {
   const [tasks, setTasks] = useState([]);
@@ -13,8 +13,16 @@ export default function useTodoList() {
 
   // Récupérer les tâches
   const fetchTasks = async () => {
-    const response = await fetch(`${API_BASE_URL}tasks/`);
-    return response.json();
+    try {
+      const response = await fetch(`${API_BASE_URL}tasks/`);
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    } catch (error) {
+      console.error("Error fetching tasks:", error);
+      return [];
+    }
   };
 
   // Ajouter une tâche
