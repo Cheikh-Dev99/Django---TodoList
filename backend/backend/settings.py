@@ -32,7 +32,16 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 # ALLOWED_HOSTS = []
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(',')
+ALLOWED_HOSTS = [
+    'django-todo-backend-50w9.onrender.com',  # Ajoutez votre domaine Render
+    'localhost',
+    '127.0.0.1',
+]
+
+# Pour plus de sécurité en production
+CSRF_TRUSTED_ORIGINS = [
+    'https://django-todo-backend-50w9.onrender.com',
+]
 
 
 # Application definition

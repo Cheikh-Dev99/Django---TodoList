@@ -10,7 +10,7 @@ services:
       - key: SECRET_KEY
         value: django-insecure-0xy3jinc5fa$!z#oz4mve91d9uv_s!mfo@1-lb15+h$hky&4!6
       - key: ALLOWED_HOSTS
-        value: django-todo-backend.onrender.com
+        value: django-todo-backend-50w9.onrender.com
       - key: DATABASE_URL
         value: postgresql://django_todo_backend_user:MA7XpQHmXwPeGaNbMI8kMENNoQKleAXp@dpg-cupka0popnds7395tocg-a.oregon-postgres.render.com/django_todo_backend
       - key: CORS_ALLOWED_ORIGINS
