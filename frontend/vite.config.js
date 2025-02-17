@@ -12,4 +12,7 @@ export default defineConfig({
       },
     },
   },
+  define: {
+    'process.env.API_URL': JSON.stringify('https://django-todo-backend-50w9.onrender.com/api')
+  }
 });

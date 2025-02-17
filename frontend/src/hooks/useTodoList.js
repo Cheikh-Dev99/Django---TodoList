@@ -13,12 +13,18 @@ export default function useTodoList() {
   // Récupérer les tâches
   const fetchTasks = async () => {
     try {
-      const response = await fetch(`${API_URL}/tasks/`);
+      const response = await fetch(`${API_URL}/tasks/`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      });
       if (!response.ok) throw new Error("Network response was not ok");
       const data = await response.json();
       return data;
     } catch (error) {
-      console.error("Error fetching tasks:", error);
+      console.error("Error:", error);
       return [];
     }
   };
@@ -30,8 +36,9 @@ export default function useTodoList() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Accept: "application/json",
         },
-        body: JSON.stringify({ text }),
+        body: JSON.stringify({ text, completed: false }),
       });
       if (!response.ok) throw new Error("Network response was not ok");
       const data = await response.json();
