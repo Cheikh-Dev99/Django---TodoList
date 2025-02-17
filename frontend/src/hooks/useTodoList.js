@@ -1,6 +1,7 @@
 // useTodoList.js
 import { useEffect, useState } from "react";
-import { API_URL } from "../config";
+
+const API_URL = "https://django-todo-backend-50w9.onrender.com/api";
 
 export default function useTodoList() {
   const [tasks, setTasks] = useState([]);
@@ -13,12 +14,11 @@ export default function useTodoList() {
   const fetchTasks = async () => {
     try {
       const response = await fetch(`${API_URL}/tasks/`);
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      return await response.json();
+      if (!response.ok) throw new Error("Network response was not ok");
+      const data = await response.json();
+      return data;
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error fetching tasks:", error);
       return [];
     }
   };
