@@ -61,7 +61,6 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "https://cheikh-dev99.github.io/Django---TodoList/",
     "https://cheikh-dev99.github.io",
 ]
 
