@@ -1,8 +1,6 @@
 // useTodoList.js
 import { useEffect, useState } from "react";
-
-// Remplacer l'ancienne URL par la nouvelle URL Render
-const API_BASE_URL = "https://django-todo-backend-50w9.onrender.com/api/";
+import { API_URL } from "../config";
 
 export default function useTodoList() {
   const [tasks, setTasks] = useState([]);
@@ -14,33 +12,38 @@ export default function useTodoList() {
   // Récupérer les tâches
   const fetchTasks = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}tasks/`);
+      const response = await fetch(`${API_URL}/tasks/`);
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
-      return response.json();
+      return await response.json();
     } catch (error) {
-      console.error("Error fetching tasks:", error);
+      console.error("Error:", error);
       return [];
     }
   };
 
   // Ajouter une tâche
-  const addTask = async (task) => {
-    const response = await fetch(`${API_BASE_URL}tasks/`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(task),
-    });
-    const newTask = await response.json();
-    setTasks([...tasks, newTask]);
+  const addTask = async (text) => {
+    try {
+      const response = await fetch(`${API_URL}/tasks/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ text }),
+      });
+      if (!response.ok) throw new Error("Network response was not ok");
+      const data = await response.json();
+      setTasks((prev) => [data, ...prev]);
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   // Supprimer une tâche
   const deleteTask = async (taskId) => {
-    const response = await fetch(`${API_BASE_URL}tasks/${taskId}/`, {
+    const response = await fetch(`${API_URL}/tasks/${taskId}/`, {
       method: "DELETE",
     });
     if (response.ok) {
@@ -50,7 +53,7 @@ export default function useTodoList() {
 
   // Modifier une tâche
   const editTask = async (taskId, updatedTask) => {
-    const response = await fetch(`${API_BASE_URL}tasks/${taskId}/`, {
+    const response = await fetch(`${API_URL}/tasks/${taskId}/`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -68,7 +71,7 @@ export default function useTodoList() {
   // Toggle complétion d'une tâche
   const toggleComplete = async (taskId) => {
     const task = tasks.find((task) => task.id === taskId);
-    const response = await fetch(`${API_BASE_URL}tasks/${taskId}/`, {
+    const response = await fetch(`${API_URL}/tasks/${taskId}/`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -83,7 +86,7 @@ export default function useTodoList() {
 
   // Archiver une tâche
   const archiveTask = async (taskId) => {
-    const response = await fetch(`${API_BASE_URL}tasks/${taskId}/archive/`, {
+    const response = await fetch(`${API_URL}/tasks/${taskId}/archive/`, {
       method: "PATCH",
     });
     if (response.ok) {
@@ -95,7 +98,7 @@ export default function useTodoList() {
 
   // Supprimer les tâches complétées
   const deleteCompletedTasks = async () => {
-    const response = await fetch(`${API_BASE_URL}tasks/delete_completed/`, {
+    const response = await fetch(`${API_URL}/tasks/delete_completed/`, {
       method: "DELETE",
     });
     if (response.ok) {
@@ -116,7 +119,7 @@ export default function useTodoList() {
 
     setTasks(updatedTasks);
 
-    await fetch(`${API_BASE_URL}tasks/reorder/`, {
+    await fetch(`${API_URL}/tasks/reorder/`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
