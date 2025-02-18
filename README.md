@@ -76,7 +76,3 @@ my-django-todo-app
 ## Contribuer
 
 Les contributions sont les bienvenues ! N'hésitez pas à soumettre des demandes de tirage ou à signaler des problèmes.
-
-## License
-
-Ce projet est sous licence MIT.
