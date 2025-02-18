@@ -9,14 +9,21 @@ class TaskViewSet(viewsets.ModelViewSet):
     queryset = Task.objects.all().order_by('order')
     serializer_class = TaskSerializer
 
-    def patch(self, request, pk=None):
-        task = self.get_object()
-        if 'completed' in request.data:
-            task.completed = request.data['completed']
-        if 'archived' in request.data:
-            task.archived = request.data['archived']
-        task.save()
-        return Response(TaskSerializer(task).data)
+    def update(self, request, *args, **kwargs):
+        try:
+            instance = self.get_object()
+            # Récupérer uniquement les champs fournis dans la requête
+            for key, value in request.data.items():
+                setattr(instance, key, value)
+            instance.save()
+            serializer = self.get_serializer(instance)
+            return Response(serializer.data)
+        except Exception as e:
+            print(f"Error updating task: {str(e)}")  # Pour le débogage
+            return Response(
+                {"error": str(e)},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
     @action(detail=False, methods=['delete'])
     def delete_completed(self, request):

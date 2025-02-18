@@ -65,16 +65,36 @@ export default function useTodoList() {
       const task = tasks.find((task) => task.id === taskId);
       if (!task) return;
 
+      const trimmedText = newText.trim();
+      if (!trimmedText) {
+        showAlert("Erreur : Veuillez saisir un texte valide pour la tâche.");
+        return;
+      }
+
+      const taskExists = tasks.some(
+        (t) =>
+          t.text.toLowerCase() === trimmedText.toLowerCase() && t.id !== taskId
+      );
+
+      if (taskExists) {
+        showAlert("Erreur : Cette tâche existe déjà.");
+        return;
+      }
+
+      console.log(
+        "Sending update request for task:",
+        taskId,
+        "with text:",
+        trimmedText
+      ); // Debug log
+
       const response = await fetch(`${API_URL}/tasks/${taskId}/`, {
-        method: "PUT",
+        method: "PATCH", // Changé de PUT à PATCH
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          text: newText,
-          completed: task.completed,
-          archived: task.archived,
-          order: task.order,
+          text: trimmedText,
         }),
       });
 
@@ -85,11 +105,14 @@ export default function useTodoList() {
       }
 
       const updatedTaskData = await response.json();
+      console.log("Received updated task:", updatedTaskData); // Debug log
+
       setTasks((prev) =>
         prev.map((task) => (task.id === taskId ? updatedTaskData : task))
       );
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error updating task:", error);
+      showAlert("Erreur lors de la modification de la tâche");
     }
   };
 

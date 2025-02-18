@@ -16,10 +16,12 @@ const TodoItem = ({
   const [editedText, setEditedText] = useState(task.text);
 
   const handleEdit = () => {
-    if (isEditing) {
+    if (isEditing && editedText.trim() !== "") {
       onEdit(task.id, editedText);
+      setIsEditing(false); // Désactive le mode édition après la soumission
+    } else {
+      setIsEditing(!isEditing);
     }
-    setIsEditing(!isEditing);
   };
 
   return (
@@ -35,7 +37,21 @@ const TodoItem = ({
               type="text"
               value={editedText}
               onChange={(e) => setEditedText(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleEdit(e)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && editedText.trim() !== "") {
+                  handleEdit();
+                } else if (e.key === "Escape") {
+                  setIsEditing(false);
+                  setEditedText(task.text); // Réinitialise le texte
+                }
+              }}
+              onBlur={() => {
+                if (editedText.trim() === "") {
+                  setIsEditing(false);
+                  setEditedText(task.text);
+                }
+              }}
+              autoFocus
               className="flex-1 px-1 py-1 mr-2 border rounded-sm"
             />
           ) : (
@@ -118,7 +134,21 @@ const TodoItem = ({
                   type="text"
                   value={editedText}
                   onChange={(e) => setEditedText(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleEdit(e)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && editedText.trim() !== "") {
+                      handleEdit();
+                    } else if (e.key === "Escape") {
+                      setIsEditing(false);
+                      setEditedText(task.text); // Réinitialise le texte
+                    }
+                  }}
+                  onBlur={() => {
+                    if (editedText.trim() === "") {
+                      setIsEditing(false);
+                      setEditedText(task.text);
+                    }
+                  }}
+                  autoFocus
                   className="flex-1 px-1 py-1 mr-2 border rounded-sm"
                 />
               ) : (
