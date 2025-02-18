@@ -16,4 +16,7 @@ urlpatterns = [
          TaskViewSet.as_view({'patch': 'reorder'}), name='task-reorder'),
     path('tasks/delete_completed/',
          TaskViewSet.as_view({'delete': 'delete_completed'}), name='task-delete-completed'),
+    path('tasks/<int:pk>/archive/',
+         TaskViewSet.as_view({'patch': 'archive'}),
+         name='task-archive'),
 ]

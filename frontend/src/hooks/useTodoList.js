@@ -60,19 +60,26 @@ export default function useTodoList() {
   };
 
   // Modifier une tâche
-  const editTask = async (taskId, updatedTask) => {
-    const response = await fetch(`${API_URL}/tasks/${taskId}/`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(updatedTask),
-    });
-    if (response.ok) {
+  const editTask = async (taskId, newText) => {
+    try {
+      const response = await fetch(`${API_URL}/tasks/${taskId}/`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          text: newText,
+          completed:
+            tasks.find((task) => task.id === taskId)?.completed || false,
+        }),
+      });
+      if (!response.ok) throw new Error("Network response was not ok");
       const updatedTaskData = await response.json();
       setTasks(
         tasks.map((task) => (task.id === taskId ? updatedTaskData : task))
       );
+    } catch (error) {
+      console.error("Error:", error);
     }
   };
 
@@ -94,13 +101,25 @@ export default function useTodoList() {
 
   // Archiver une tâche
   const archiveTask = async (taskId) => {
-    const response = await fetch(`${API_URL}/tasks/${taskId}/archive/`, {
-      method: "PATCH",
-    });
-    if (response.ok) {
+    try {
+      const response = await fetch(`${API_URL}/tasks/${taskId}/archive/`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (!response.ok) throw new Error("Network response was not ok");
       const updatedTask = await response.json();
-      setTasks(tasks.filter((task) => task.id !== taskId));
-      setArchivedTasks([...archivedTasks, updatedTask]);
+
+      if (updatedTask.archived) {
+        setTasks((prev) => prev.filter((task) => task.id !== taskId));
+        setArchivedTasks((prev) => [...prev, updatedTask]);
+      } else {
+        setArchivedTasks((prev) => prev.filter((task) => task.id !== taskId));
+        setTasks((prev) => [...prev, updatedTask]);
+      }
+    } catch (error) {
+      console.error("Error:", error);
     }
   };
 

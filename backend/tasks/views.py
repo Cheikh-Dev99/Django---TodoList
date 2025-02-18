@@ -32,3 +32,16 @@ class TaskViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return Task.objects.all().order_by('order')
+
+    @action(detail=True, methods=['patch'])
+    def archive(self, request, pk=None):
+        try:
+            task = self.get_object()
+            task.archived = not task.archived  # Toggle l'état d'archivage
+            task.save()
+            return Response(self.serializer_class(task).data)
+        except Task.DoesNotExist:
+            return Response(
+                {"error": "Task not found"},
+                status=status.HTTP_404_NOT_FOUND
+            )
