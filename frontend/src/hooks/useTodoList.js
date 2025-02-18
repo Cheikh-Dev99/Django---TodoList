@@ -62,9 +62,6 @@ export default function useTodoList() {
   // Modifier une tâche
   const editTask = async (taskId, newText) => {
     try {
-      const task = tasks.find((task) => task.id === taskId);
-      if (!task) return;
-
       const trimmedText = newText.trim();
       if (!trimmedText) {
         showAlert("Erreur : Veuillez saisir un texte valide pour la tâche.");
@@ -72,8 +69,9 @@ export default function useTodoList() {
       }
 
       const taskExists = tasks.some(
-        (t) =>
-          t.text.toLowerCase() === trimmedText.toLowerCase() && t.id !== taskId
+        (task) =>
+          task.text.toLowerCase() === trimmedText.toLowerCase() &&
+          task.id !== taskId
       );
 
       if (taskExists) {
@@ -81,21 +79,12 @@ export default function useTodoList() {
         return;
       }
 
-      console.log(
-        "Sending update request for task:",
-        taskId,
-        "with text:",
-        trimmedText
-      ); // Debug log
-
       const response = await fetch(`${API_URL}/tasks/${taskId}/`, {
-        method: "PATCH", // Changé de PUT à PATCH
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          text: trimmedText,
-        }),
+        body: JSON.stringify({ text: trimmedText }),
       });
 
       if (!response.ok) {
@@ -104,11 +93,9 @@ export default function useTodoList() {
         throw new Error("Failed to update task");
       }
 
-      const updatedTaskData = await response.json();
-      console.log("Received updated task:", updatedTaskData); // Debug log
-
+      const updatedTask = await response.json();
       setTasks((prev) =>
-        prev.map((task) => (task.id === taskId ? updatedTaskData : task))
+        prev.map((task) => (task.id === taskId ? updatedTask : task))
       );
     } catch (error) {
       console.error("Error updating task:", error);

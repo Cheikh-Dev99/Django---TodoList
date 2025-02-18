@@ -16,11 +16,13 @@ const TodoItem = ({
   const [editedText, setEditedText] = useState(task.text);
 
   const handleEdit = () => {
-    if (isEditing && editedText.trim() !== "") {
-      onEdit(task.id, editedText);
-      setIsEditing(false); // Désactive le mode édition après la soumission
+    if (isEditing) {
+      if (editedText.trim() !== "") {
+        onEdit(task.id, editedText);
+        setIsEditing(false);
+      }
     } else {
-      setIsEditing(!isEditing);
+      setIsEditing(true);
     }
   };
 
@@ -38,11 +40,14 @@ const TodoItem = ({
               value={editedText}
               onChange={(e) => setEditedText(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === "Enter" && editedText.trim() !== "") {
-                  handleEdit();
+                if (e.key === "Enter") {
+                  if (editedText.trim() !== "") {
+                    onEdit(task.id, editedText);
+                    setIsEditing(false);
+                  }
                 } else if (e.key === "Escape") {
                   setIsEditing(false);
-                  setEditedText(task.text); // Réinitialise le texte
+                  setEditedText(task.text);
                 }
               }}
               onBlur={() => {
@@ -135,11 +140,14 @@ const TodoItem = ({
                   value={editedText}
                   onChange={(e) => setEditedText(e.target.value)}
                   onKeyDown={(e) => {
-                    if (e.key === "Enter" && editedText.trim() !== "") {
-                      handleEdit();
+                    if (e.key === "Enter") {
+                      if (editedText.trim() !== "") {
+                        onEdit(task.id, editedText);
+                        setIsEditing(false);
+                      }
                     } else if (e.key === "Escape") {
                       setIsEditing(false);
-                      setEditedText(task.text); // Réinitialise le texte
+                      setEditedText(task.text);
                     }
                   }}
                   onBlur={() => {
