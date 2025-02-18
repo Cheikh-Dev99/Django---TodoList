@@ -62,6 +62,9 @@ export default function useTodoList() {
   // Modifier une tâche
   const editTask = async (taskId, newText) => {
     try {
+      const task = tasks.find((task) => task.id === taskId);
+      if (!task) return;
+
       const response = await fetch(`${API_URL}/tasks/${taskId}/`, {
         method: "PUT",
         headers: {
@@ -69,14 +72,21 @@ export default function useTodoList() {
         },
         body: JSON.stringify({
           text: newText,
-          completed:
-            tasks.find((task) => task.id === taskId)?.completed || false,
+          completed: task.completed,
+          archived: task.archived,
+          order: task.order,
         }),
       });
-      if (!response.ok) throw new Error("Network response was not ok");
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Server error:", errorData);
+        throw new Error("Failed to update task");
+      }
+
       const updatedTaskData = await response.json();
-      setTasks(
-        tasks.map((task) => (task.id === taskId ? updatedTaskData : task))
+      setTasks((prev) =>
+        prev.map((task) => (task.id === taskId ? updatedTaskData : task))
       );
     } catch (error) {
       console.error("Error:", error);
@@ -108,15 +118,37 @@ export default function useTodoList() {
           "Content-Type": "application/json",
         },
       });
-      if (!response.ok) throw new Error("Network response was not ok");
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
       const updatedTask = await response.json();
 
+      // Si la tâche est archivée
       if (updatedTask.archived) {
+        // Retirer de la liste principale et ajouter aux archives
         setTasks((prev) => prev.filter((task) => task.id !== taskId));
-        setArchivedTasks((prev) => [...prev, updatedTask]);
+        setArchivedTasks((prev) => {
+          // Vérifier si la tâche n'existe pas déjà dans les archives
+          const exists = prev.some((task) => task.id === taskId);
+          if (!exists) {
+            return [...prev, updatedTask];
+          }
+          return prev;
+        });
       } else {
+        // Si la tâche est désarchivée
+        // Retirer des archives et ajouter à la liste principale
         setArchivedTasks((prev) => prev.filter((task) => task.id !== taskId));
-        setTasks((prev) => [...prev, updatedTask]);
+        setTasks((prev) => {
+          // Vérifier si la tâche n'existe pas déjà dans la liste principale
+          const exists = prev.some((task) => task.id === taskId);
+          if (!exists) {
+            return [...prev, updatedTask];
+          }
+          return prev;
+        });
       }
     } catch (error) {
       console.error("Error:", error);

@@ -37,11 +37,20 @@ class TaskViewSet(viewsets.ModelViewSet):
     def archive(self, request, pk=None):
         try:
             task = self.get_object()
-            task.archived = not task.archived  # Toggle l'état d'archivage
+            # Toggle l'état d'archivage
+            task.archived = not task.archived
             task.save()
-            return Response(self.serializer_class(task).data)
+
+            # Sérialiser et renvoyer la tâche mise à jour
+            serializer = self.get_serializer(task)
+            return Response(serializer.data)
         except Task.DoesNotExist:
             return Response(
                 {"error": "Task not found"},
                 status=status.HTTP_404_NOT_FOUND
+            )
+        except Exception as e:
+            return Response(
+                {"error": str(e)},
+                status=status.HTTP_400_BAD_REQUEST
             )
