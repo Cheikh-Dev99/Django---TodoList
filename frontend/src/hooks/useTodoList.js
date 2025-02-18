@@ -19,13 +19,14 @@ export default function useTodoList() {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
+        credentials: "omit",
       });
       if (!response.ok) throw new Error("Network response was not ok");
       const data = await response.json();
-      return data;
+      setTasks(data);
     } catch (error) {
       console.error("Error:", error);
-      return [];
+      setTasks([]);
     }
   };
 
