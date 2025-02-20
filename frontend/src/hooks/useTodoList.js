@@ -1,7 +1,8 @@
 // useTodoList.js
 import { useEffect, useState } from "react";
+import { API_PROD, API_DEV } from "../config";
 
-const API_URL = "https://django-todo-backend-50w9.onrender.com/api";
+const API_URL = API_DEV;
 
 export default function useTodoList() {
   const [tasks, setTasks] = useState([]);
@@ -26,6 +27,7 @@ export default function useTodoList() {
       setTasks(data);
     } catch (error) {
       console.error("Error:", error);
+      showAlert("Erreur lors de la récupération des tâches");
       setTasks([]);
     }
   };
