@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { API_PROD, API_DEV } from "../config";
 
-const API_URL = API_DEV;
+const API_URL = API_PROD;
 
 export default function useTodoList() {
   const [tasks, setTasks] = useState([]);
