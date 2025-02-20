@@ -35,13 +35,28 @@ export default function useTodoList() {
   // Ajouter une tâche
   const addTask = async (text) => {
     try {
+      const trimmedText = text.trim();
+      if (!trimmedText) {
+        showAlert("Erreur : Veuillez saisir un texte valide pour la tâche.");
+        return;
+      }
+
+      const taskExists = tasks.some(
+        (task) => task.text.toLowerCase() === trimmedText.toLowerCase()
+      );
+
+      if (taskExists) {
+        showAlert("Erreur : Cette tâche existe déjà.");
+        return;
+      }
+
       const response = await fetch(`${API_URL}/tasks/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
-        body: JSON.stringify({ text, completed: false }),
+        body: JSON.stringify({ text: trimmedText, completed: false }),
       });
       if (!response.ok) throw new Error("Network response was not ok");
       const data = await response.json();
